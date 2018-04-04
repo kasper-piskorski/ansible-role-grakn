@@ -71,13 +71,30 @@
   copy:
     src: "{{ grakn_upload_directory }}/{{ grakn_license }}"
     dest: "{{ cluster_home }}/grakn/"
-  #when: grakn_dist | search("kbms")
+  when: grakn_dist | search("kgms")
 
 - name: Upload decrypt file
   copy:
     src: "{{ grakn_upload_directory }}/{{ grakn_decrypt }}"
     dest: "{{ cluster_home }}/grakn/"
-  #when: grakn_dist | search("kbms")
+  when: grakn_dist | search("kgms")
+
+#######################
+# CQLSH INSTALLATION
+#######################
+- name: Install python-pip
+  apt:
+    name: python-pip
+    state: present
+
+- name: Install cassandra-driver
+  pip:
+    name: cassandra-driver
+
+- name: cqlsh
+  pip:
+    name: cqlsh
+    version: 5.0.3
 
 - block:
   - name: Configure grakn.properties
