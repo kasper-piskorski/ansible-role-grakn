@@ -67,30 +67,20 @@
   args:
     creates: "{{ cluster_home }}/grakn/"
 
-- name: Upload license
+- name: Upload license and decrypt file
   copy:
-    src: "{{ grakn_upload_directory }}/{{ grakn_license }}"
+    src: "{{ item }}"
     dest: "{{ cluster_home }}/grakn/"
-  when: grakn_dist | search("kgms")
-
-- name: Upload decrypt file
-  copy:
-    src: "{{ grakn_upload_directory }}/{{ grakn_decrypt }}"
-    dest: "{{ cluster_home }}/grakn/"
-  when: grakn_dist | search("kgms")
+  when: grakn_dist in search("kgms")
+  with_items:
+    - "{{ grakn_upload_directory }}/{{ grakn_license }}"
+    - "{{ grakn_upload_directory }}/{{ grakn_decrypt }}"
 
 - name: Download Cassandra
   get_url:
     url: "{{ cass_download_url }}"
     dest: "{{ cluster_home }}"
-  when: grakn_dist | search("kgms")
-
-#- name: Unpack Cassandra
-#  unarchive:
-#    src: "{{ cluster_home }}{{ cass_package }}"
-#    dest: "{{ cluster_home }}"
-#    copy: no
-#  when: grakn_dist | search("kgms")
+  when: grakn_dist in search("kgms")
 
 - block:
   - name: Configure grakn.properties
@@ -155,13 +145,13 @@
     group: "{{group_name}}"
     recurse: yes
   with_items:
-    - "{{cluster_home}}grakn/"
+    - "{{cluster_home}}/grakn/"
 
-- name: Start Grakn
-  service:
-    name: grakn
-    state: "{{ grakn_service_state }}"
-    enabled: "{{ grakn_service_enabled }}"
+#- name: Start Grakn
+#  service:
+#    name: grakn
+#    state: "{{ grakn_service_state }}"
+#    enabled: "{{ grakn_service_enabled }}"
 
 - name: Create symlinks
   file:
