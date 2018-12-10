@@ -71,10 +71,10 @@
   copy:
     src: "{{ item }}"
     dest: "{{ cluster_home }}/grakn/"
-  when: grakn_dist in search("kgms")
   with_items:
     - "{{ grakn_upload_directory }}/{{ grakn_license }}"
     - "{{ grakn_upload_directory }}/{{ grakn_decrypt }}"
+  when: grakn_dist | search("kgms")
 
 - name: Download Cassandra
   get_url:
