@@ -67,17 +67,17 @@
   args:
     creates: "{{ cluster_home }}/grakn/"
 
-- name: Upload license
-  copy:
-    src: "{{ grakn_upload_directory }}/{{ grakn_license }}"
-    dest: "{{ cluster_home }}/grakn/"
-  when: grakn_dist | search("kgms")
+#- name: Upload license
+# copy:
+#    src: "{{ grakn_upload_directory }}/{{ grakn_license }}"
+#    dest: "{{ cluster_home }}/grakn/"
+#  when: grakn_dist | search("kgms")
 
-- name: Upload decrypt file
-  copy:
-    src: "{{ grakn_upload_directory }}/{{ grakn_decrypt }}"
-    dest: "{{ cluster_home }}/grakn/"
-  when: grakn_dist | search("kgms")
+#- name: Upload decrypt file
+#  copy:
+#    src: "{{ grakn_upload_directory }}/{{ grakn_decrypt }}"
+#    dest: "{{ cluster_home }}/grakn/"
+#  when: grakn_dist | search("kgms")
 
 - name: Download Cassandra
   get_url:
@@ -102,7 +102,7 @@
     with_first_found:
       - "{{ grakn_version | regex_replace('-SNAPSHOT') }}/grakn.properties.j2"
       - "grakn.properties.j2"
-    notify: restart grakn
+ #   notify: restart grakn
 
   - name: Configure logback.xml
     template:
@@ -116,7 +116,7 @@
         - "{{ grakn_version | regex_replace('-SNAPSHOT') }}/logback.xml.j2"
         skip: true
     when: custom_logback == true
-    notify: restart grakn
+ #   notify: restart grakn
 
   - name: systemd service
     template:
@@ -125,7 +125,7 @@
       owner: "{{user_name}}"
       group: "{{group_name}}"
     register: systemd_grakn_config
-    notify: restart grakn
+    #notify: restart grakn
     with_first_found:
       - "{{ grakn_version }}/grakn.service.j2"
       - "grakn.service.j2"
@@ -136,7 +136,7 @@
       dest: /etc/default/grakn
       owner: "{{user_name}}"
       group: "{{group_name}}"
-    notify: restart grakn
+    #notify: restart grakn
     with_first_found:
       - "{{ grakn_version }}/default-grakn-environmentfile"
       - "default-grakn-environmentfile"
